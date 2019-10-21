@@ -40,7 +40,7 @@ Beacon Interval: 0.063488 [Seconds]
 
 Answer:
 
-From the data above, we can see the interval is 0.063488s.
+From the data above, we can see the interval is **0.063488s.**
 
 
 
@@ -52,7 +52,7 @@ The addresses can be seen from the following:
 
 ```
 Transmitter address: Cisco-Li_f7:1d:51 (00:16:b6:f7:1d:51)
-Source address: Cisco-Li_f7:1d:51 (00:16:b6:f7:1d:51)
+Source address: Cisco-Li_f7:1d:51 (00:16:b6:f7:1d:51) -- this is the answer
 BSS Id: Cisco-Li_f7:1d:51 (00:16:b6:f7:1d:51)
 ```
 
@@ -82,7 +82,7 @@ BSS Id: Cisco-Li_f7:1d:51 (00:16:b6:f7:1d:51)
 
 Answer:
 
-Several data rates have been standardized for wireless LANs. The Supported Rates information element allows an 802.11 network to specify the data rates it supports. When mobile stations attempt to join the network, they check the data rates used in the network. Some rates are mandatory and must be supported by the mobile station, while others are optional. It consists of a string of bytes. Each byte uses the seven low-order bits for the data rate; the most significant bit indicates whether the data rate is mandatory. Mandatory rates are encoded with the most significant bit set to 1 and optional rates have a 0. Up to eight rates may be encoded in the information element. As the number of data rates has proliferated, the Extended Supported Rates element was standardized to handle more than eight data rates.
+The support rates are 1.0, 2.0, 5.5, 11.0 Mbps. The extended rates are 6.0, 9.0, 12.0, 18.0, 24.0, 36.0, 48.0 and 54.0 Mbps. Several data rates have been standardized for wireless LANs. The Supported Rates information element allows an 802.11 network to specify the data rates it supports. When mobile stations attempt to join the network, they check the data rates used in the network. Some rates are mandatory and must be supported by the mobile station, while others are optional. It consists of a string of bytes. Each byte uses the seven low-order bits for the data rate; the most significant bit indicates whether the data rate is mandatory. Mandatory rates are encoded with the most significant bit set to 1 and optional rates have a 0. Up to eight rates may be encoded in the information element. As the number of data rates has proliferated, the Extended Supported Rates element was standardized to handle more than eight data rates.
 
 
 
@@ -149,7 +149,7 @@ I used the filter:
 
 to check the result. And the number is 15.
 
-<img src="./Lab1-Part1/workout/pics/num_authentication.png">
+<img src="./workout/pics/num_authentication.png">
 
 
 
@@ -187,7 +187,7 @@ By using the filter:
 
 I can see the AUTHENTICATION frame sent at time 63.168087s and reply at time 63.169071s.
 
-<img src="./Lab1-Part1/workout/pics/pair_authentication.png">
+<img src="./workout/pics/pair_authentication.png">
 
 
 
@@ -203,7 +203,7 @@ wlan.fc.subtype < 2 and wlan.fc.type == 0 and wlan.addr == 00:13:02:d1:b6:4f
 
 I can see the ASSOCIATION REQUEST was sent at time 63.169910s, and REPLY was sent at time 63.192101s.
 
-<img src="./Lab1-Part1/workout/pics/pair_association.png">
+<img src="./workout/pics/pair_association.png">
 
 
 
@@ -213,7 +213,7 @@ Answer:
 
 In the ASSOCIATION Reply frame, the supported data rates are: 1, 2, 5.5, 11, 6, 9, 12, 18, 24, 36, 48, 54 Mbit/sec. In the ASSOCIATION REQUEST frame, the supported data rates are the same. 
 
-<img src="./Lab1-Part1/workout/pics/datarates_supported.png">
+<img src="./workout/pics/datarates_supported.png">
 
 
 
@@ -279,7 +279,7 @@ On the client side, the duration is $0.003679 + 0.003796 - 0.003753 = 0.003722$.
 
 On the server side, the duration is $0.003796 - 0.003679 = 0.000117$
 
-<img src="Lab1-Part1/workout/pics/FIN_ACK.png">
+<img src="./workout/pics/FIN_ACK.png">
 
 
 
@@ -321,11 +321,9 @@ The retransmission rate is hugely different between the 2 devices, and the retra
 
 > 1. Implement a processing program to calculate the latency of DNS Lookup, Initial TCP Connection Establishment (i.e. TCP Handshake Time), Request Sending, TTFB (Time to First Byte), Content Downloading Time. Show the results for each website (by charts or figures).
 
-
-
-
-
 > 2. Choose 3+ page loading procedures (from different websites) and draw visual waterfall graphs to show the breakdown of web latency.
+
+All the answers and data can be seen in the folder: `lantency_pics`. 
 
 
 
