@@ -287,7 +287,9 @@ On the server side, the duration is $0.003796 - 0.003679 = 0.000117$
 
 Answer:
 
+The mean time is 11.02s, and the standard deviation is 13.75.
 
+The retransmission will affect the TCP because TCP will require the order of the packages received. 
 
 
 
@@ -297,21 +299,53 @@ Answer:
 
 **Out-of-order delay**
 
+The mean of the TCP out-of-order delay is 0.004407s, and the standard deviation is 0.014660 on the co-located side. 
+
+The mean of the TCP out-of-order delay is 0 on the client side. 
+
 **Retransmission rate**
 
-On the server end, the total number of TCP packets sent/received is 62412, the number of retransmissions is 27909, so the mean retransmission rate is $27909 \div 62412 = 44.7\%$.
+On the co-located end, the total number of TCP packets sent/received is 62412, the number of retransmissions is 27909, so the mean retransmission rate is 47.9451%.
 
-On the client end, the total number of TCP packets sent/received is 49727, the number of retransmissions is 45, so the mean retransmission rate is $45 \div 49727 = 9.05\%$.
+On the client end, the total number of TCP packets sent/received is 49727, the number of retransmissions is 45, so the mean retransmission rate is 0.1048%.
 
 The retransmission rate is hugely different between the 2 devices, and the retransmission rate on the client is largely lower then that on the server due to the high congestion traffic on the server end. 
 
 **RTT**
 
+On the co-located end, the mean of rtt is 0.008096s, and std is 0.017167.
+
+On the client end, the mean of rtt is 0.011156s, and std is 0.018407.
+
 
 
 > 4. Plot the time series of throughput, RTT, and retransmission rate observed on both devices. Analyze how the path loss in L1/L2 affects TCP performance (e.g. throughput and RTT).
 
+**Co-located Throughput**
 
+![wlan_throughput](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\wlan_throughput.png)
+
+**Client Throughput**
+
+![tcp_throughput](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\tcp_throughput.png)
+
+**Co-located Retransmission Rate**
+
+![wlan_retransRate](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\wlan_retransRate.png)
+
+**Client Retransmission Rate**
+
+![tcp_retransRate](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\tcp_retransRate.png)
+
+**Co-located RTT**
+
+![wlan_rtt](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\wlan_rtt.png)
+
+**Client RTT**
+
+![tcp_rtt](D:\Desktop\本科\大四\大四上\计算机网络（实验班）\Labs\Lab 1\cross-layer-analyzer\csv\tcp_rtt.png)
+
+The L1/L2 path loss is significantly larger on the co-located end which may do larger harm to the TCP performance. 
 
 > 5. Other insights you get from the traces.
 
