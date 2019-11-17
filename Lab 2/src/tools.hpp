@@ -6,6 +6,7 @@
 #include <netdb.h> 
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+#include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <signal.h>
 #include <string>
@@ -49,5 +50,7 @@ void printRoutingEntry(routing_entry *entry, int entry_id);
 void printLogicalNode(logical_node *node);
 
 void printEdge(edge *e);
+
+void printTCPHeader(tcphdr *tcp_header);
 
 #endif

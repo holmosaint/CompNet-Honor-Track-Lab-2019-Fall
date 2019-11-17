@@ -6,6 +6,7 @@
 #include <netdb.h> 
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+#include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <signal.h>
 #include <string.h>
@@ -94,6 +95,7 @@ char *IPPacketType2String(uint32_t type_id) {
     default:
         break;
     }
+    printf("Error IP packet type: %ud\n", type_id);
     return "Error in interpreting IP packet type\n";
 }
 
@@ -139,7 +141,7 @@ void printRoutingEntry(routing_entry *entry, int entry_id) {
     IP2IPString(entry->network_destination.s_addr, ip_buf);
     IP2IPString(entry->netmask.s_addr, mask_buf);
 
-    printf("Routing Entry %d: Dest IP: %s, Dest Mask: %s, Next NS ID: %d, Next MAC Addr: %s\n", 
+    printf("Routing Entry %d: Dest IP: %s, Dest Mask: %s, Next HOP ID: %d, Next MAC Addr: %s\n", 
             entry_id, ip_buf, mask_buf, entry->next_hop_id, entry->nextMAC);
 }
 
@@ -158,4 +160,15 @@ void printEdge(edge *e) {
     IP2IPString(e->ip_link.s_addr, buf);
     printf("\tIP Link: %s\n" ,buf);
     printf("}\n");
+}
+
+void printTCPHeader(tcphdr *tcp_header) {
+    printf("-------TCP Header-------\n");
+    printf("Src port: %d. Dest port: %d\n", tcp_header->th_sport, tcp_header->th_dport);
+    printf("Seq number: %d, Ack number: %d\n", tcp_header->th_seq, tcp_header->th_ack);
+    printf("Data offset: %d\n", tcp_header->th_off);
+    printf("Flags: %x\n", tcp_header->th_flags);
+    printf("Window: %d\n", tcp_header->th_win);
+    printf("Checksum: %d\n", tcp_header->th_sum);
+    printf("------------------------\n");
 }

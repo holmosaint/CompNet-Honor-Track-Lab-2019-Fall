@@ -14,6 +14,7 @@
 #include "tools.hpp"
 #include "packetio.hpp"
 #include "ip.hpp"
+#include "socket.hpp"
 
 /* Global Variables */
 IPPacketReceiveCallback ip_callback_function_ptr;
@@ -39,7 +40,6 @@ bool operator>(const dij_node &n1, const dij_node &n2) {
 routing_entry *routing(in_addr daddr) {
     routing_entry entry, *match_entry = NULL;
 
-    // TODO: add lock here!!!
     pthread_mutex_lock(&routing_mutex);
     //printf("Get routing lock!\n");
     std::deque<routing_entry *>::iterator it = routing_table.begin();       
@@ -143,7 +143,7 @@ int sendIPPacket(const struct in_addr src, const struct in_addr dest, int proto,
     char nextMAC[20];
     int id;
 
-    // TODO: Search routing table to get the MAC address and device id
+    // Search routing table to get the MAC address and device id
     // Client: send to the router (client should only connect to a single router)
     if(device_type == CLIENT) {
         id = 0;
@@ -277,12 +277,17 @@ int IPReceiveHandler(const void* buf, int len) {
     /* 3 types of process:
      *      - modify routing table
      *      - continue sending the packet according to the routing table
-     *      - arrives at destination, extract payload and TODO: pass to TCP layer
+     *      - arrives at destination, extract payload and pass to TCP layer
      */
     if(device_type == CLIENT) {
-        printf("Receive [%s] packet from [%s] with content: %s\n", IPPacketType2String(ip_header.packet_type), saddr, payload);
+        // printf("Receive [%s] packet from [%s] with content: %s\n", IPPacketType2String(ip_header.packet_type), saddr, payload);
 
-        // TODO: in part-3, pass the packet to TCP layer
+        // in part-3, pass the packet to TCP layer
+        if(TCPReceiveHandler(payload, payload_size, src) < 0) {
+            // printf("Error in sending packet from IP layer to TCP layer!\n");
+            // return -1;
+            return 0;
+        }
     }
     else if(device_type == ROUTER) {
         bool needConnection = false, needEdge = false;

@@ -15,6 +15,7 @@
 #include "packetio.hpp"
 #include "ip.hpp"
 #include "tools.hpp"
+#include "socket.hpp"
 using namespace std;
 
 int main(int argc, char **argv) {
@@ -54,6 +55,7 @@ int main(int argc, char **argv) {
     } */
     
     /* Initialization */
+    initSocketPool();
     setFrameReceiveCallback(frameHandler);
     setIPPacketReceiveCallback(IPReceiveHandler);
     pthread_mutex_init(&device_mutex, 0);
@@ -73,6 +75,7 @@ int main(int argc, char **argv) {
     string command;
     while(cin >> command) {
         string deviceName, msg, destmac, destIP;
+        in_port_t src_port, dest_port;
         int return_id;
 
         if(command.compare("addDevice") == 0) {
@@ -139,11 +142,125 @@ int main(int argc, char **argv) {
             
         }
 
+        else if(command.compare("connect") == 0) {
+            cin >> deviceName;
+            int device_id = lookupdevice(deviceName);
+            // device not found
+            if(device_id < 0) {
+                printf("Device (%s) not found in the library!\n", deviceName.c_str());
+                continue;
+            }
+
+            // Client sets up sockets and waits to form connection
+            int socket = __wrap_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+            if(socket < 0) {
+                printf("Error in open sockets!\n");
+                continue;
+            }
+
+            cin >> src_port;
+            sockaddr_in addr;
+            addr.sin_port = src_port;
+            addr.sin_addr = device_list[device_id].ip_addr;
+            return_id = __wrap_bind(socket, (const sockaddr *)&addr, sizeof(addr));
+            if(return_id < 0) {
+                printf("Error in bind IP: %s, port: %d with socket %d\n", inet_ntoa(addr.sin_addr), src_port, socket);
+                continue;
+            }
+
+            cin >> destIP >> dest_port;
+            in_addr daddr;
+            inet_pton(AF_INET, destIP.c_str(), &(daddr.s_addr));
+            addr.sin_port = dest_port;
+            addr.sin_addr = daddr;
+            return_id = __wrap_connect(socket, (const sockaddr *)&addr, sizeof(addr));
+            if(return_id < 0) {
+                printf("Error in connect with dest IP: %s, dest port: %d with socket %d\n", destIP.c_str(), dest_port, socket);
+                continue;
+            }
+        }
+
+        else if(command.compare("serve") == 0) {
+            cin >> deviceName;
+            int device_id = lookupdevice(deviceName);
+            // device not found
+            if(device_id < 0) {
+                printf("Device (%s) not found in the library!\n", deviceName.c_str());
+                continue;
+            }
+
+            // Sets up sockets and waits to form connection
+            int socket = __wrap_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+            if(socket < 0) {
+                printf("Error in open sockets!\n");
+                continue;
+            }
+
+            cin >> src_port;
+            sockaddr_in addr;
+            addr.sin_port = src_port;
+            addr.sin_addr = device_list[device_id].ip_addr;
+            return_id = __wrap_bind(socket, (const sockaddr *)&addr, sizeof(addr));
+            if(return_id < 0) {
+                printf("Error in bind IP: %s, port: %d with socket %d\n", inet_ntoa(addr.sin_addr), src_port, socket);
+                continue;
+            }
+            
+            // Server starting listening
+            return_id = __wrap_listen(socket, 0);
+            if(return_id < 0) {
+                printf("Error in listening for connections! IP: %s, port: %d\n", inet_ntoa(addr.sin_addr), src_port);
+                continue;
+            }
+
+            // Accept connection
+            socklen_t addr_len;
+            return_id = __wrap_accept(socket, (sockaddr *)&addr, &addr_len);
+            if(return_id < 0) {
+                printf("Error in accepting!\n");
+                continue;
+            }
+        }
+
+        else if(command.compare("read") == 0) {
+            // Read message from TCP
+            ssize_t nbyte;
+            int socket;
+            cin >> socket;
+
+            char buf[MAXMSGSIZE];
+
+            nbyte = __wrap_read(socket, buf, MAXMSGSIZE);
+            if(nbyte < 0) {
+                printf("Error in reading msg from socket: %d!\n", socket);
+                continue;
+            }
+
+            printf("Read %s bytes: %d\n", buf, nbyte);
+        }
+
+        else if(command.compare("write") == 0) {
+            // Write message through socket
+            ssize_t nbyte;
+            int socket;
+            cin >> socket;
+
+            cin >> msg;
+
+            // printf("Msg: %s, length: %u, socket: %d\n", msg.c_str(), msg.size(), socket);
+            nbyte = __wrap_write(socket, msg.c_str(), msg.size());
+            if(nbyte < 0) {
+                printf("Error in writing msg to socket: %d!\n", socket);
+                continue;
+            }
+        }
+
         else if(command.compare("exit") == 0) {
             // TODO: recollect all the alive threads
             for(unsigned int i = 0;i < device_list.size(); ++i) {
                 pthread_kill(listening_thread_pool[i], SIGKILL);
             }
+            releaseSocket();
             pthread_mutex_destroy(&connection_mutex);
             pthread_mutex_destroy(&edge_mutex);
             break;
