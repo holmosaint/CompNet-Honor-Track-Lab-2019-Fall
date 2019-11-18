@@ -593,3 +593,11 @@ ssize_t __wrap_close(int fildes) {
 
     return 0; 
 }
+
+/**
+* @see [POSIX.1-2017:getaddrinfo](http://pubs.opengroup.org/onlinepubs/
+* 9699919799/functions/getaddrinfo.html)
+*/
+int __wrap_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res) {
+    
+}
